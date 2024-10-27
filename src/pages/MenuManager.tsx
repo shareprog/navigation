@@ -1,0 +1,235 @@
+
+import { Avatar, message, Modal } from "antd";
+import {
+  ActionType,
+  EditableProTable,
+  ProColumns,
+} from '@ant-design/pro-components';
+import { Key, useEffect, useRef, useState } from "react";
+import axios from "axios";
+import Iconfont from "../components/Iconfont";
+
+type DataSourceType = {
+  key: React.Key;
+  label: string;
+  icon: string;
+  parent: string;
+};
+
+
+interface IMenuModel {
+  key: string
+  icon: string
+  label: string
+  parent: string 
+}
+
+const convertTree = (menus: IMenuModel[]) => {
+  const menuData: (IMenuModel & {children?: IMenuModel[]})[] = [];
+  const map = new Map();
+  menus.forEach((item: IMenuModel) => map.set(item.key, item));
+  for(let value of map.values()) {
+    if (value.parent) {
+      const parent = map.get(value.parent);
+      if (parent) {
+        parent.children = parent.children || [];
+        parent.children.push({
+          key: value.key,
+          label: value.label,
+          parent: value.parent,
+        })
+      }
+    } else {
+      menuData.push(value)
+    }
+  }
+  return menuData;
+}
+
+function MenuManager({
+  openMenu, setOpenMenu
+}) {
+  // const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  // const [dataSource, setDataSource] = useState<readonly DataSourceType[]>([]);
+  const [menuSelect, setMenuSelect] = useState<[]>([]);
+  const [menuKeys, setMenuKeys] = useState<string[]>([]);
+
+  const actionRef = useRef<ActionType>();
+  useEffect(() => {
+    axios.get('/api/menu/list').then(res => {
+      if (res.status === 200) {
+        setMenuKeys(res.data.map(item => item.key))
+        setMenuSelect(res.data.filter(item => item.icon).map(item => ({label: item.label, value: item.key})))
+      }
+    })
+  }, [openMenu])
+
+  const columns: ProColumns<DataSourceType>[] = [
+    {
+      title: '编码',
+      dataIndex: 'key',
+      // readonly: true,
+      width: '20%',
+      index: 1,
+      editable: (text, record, index) => {
+        return index == 0;
+      },
+    },
+    {
+      title: '名称',
+      dataIndex: 'label',
+      formItemProps: (form, { rowIndex }) => {
+        return {
+          rules:
+            rowIndex > 1 ? [{ required: true, message: '此项为必填项' }] : [],
+        };
+      },
+      width: '30%',
+      index: 3,
+    },
+    {
+      title: '图标',
+      dataIndex: 'icon',
+      width: '10%',
+      index: 2,
+      editable: (text, record, index) => {
+        return !record.parent;
+      },
+      render: (text) => {
+        return text !== '-' ? <Iconfont icon={text} /> : ''
+      },
+    },
+    {
+      title: '所属菜单',
+      key: 'parent',
+      dataIndex: 'parent',
+      width: '20%',
+      valueType: 'select',
+      fieldProps: {
+        options: menuSelect
+      },
+      index: 4,
+    },
+    {
+      title: '操作',
+      valueType: 'option',
+      width: 200,
+      index: 5,
+      render: (text, record, _, action) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(record.key);
+          }}
+        >
+          编辑
+        </a>,
+        <a
+          key="delete"
+          onClick={() => {
+            axios.delete(`/api/menu/${record.key}`).then(res => {
+              if (res.status === 200) {
+                message.success('删除成功')
+                actionRef.current.reload();
+              }
+            })
+          }}
+        >
+          删除
+        </a>,
+      ],
+    },
+  ];
+
+  return ( <Modal
+    open={openMenu}
+    title="卡片管理"
+    okText="确认"
+    onOk={() => setOpenMenu(false)}
+    cancelText="取消"
+    maskClosable={false}
+    onCancel={() => setOpenMenu(false)}
+    cancelButtonProps={{
+      hidden: true,
+    }}
+    destroyOnClose
+    width={'50vw'}
+    style={{ width: '100vw' , height: '90vh' }}
+  >
+    <EditableProTable
+      rowKey="key"
+      headerTitle="卡片管理"
+      toolBarRender={false}
+      scroll={{
+        x: 920,
+        y: 400,
+      }}
+      request={async (params: {
+        pageSize: number;
+        current: number;
+      },) => {
+        const data = await axios.get('/api/menu/list');
+        // setmenuSelect(data.data.map(item => ({label: item.label, value: item.key})))
+        return ({
+          data: data.data,
+          success: true,
+        });
+      }}
+      postData={(dataSource) => convertTree(dataSource)}
+      actionRef={actionRef}
+      columns={columns}
+      // onValuesChange={(value, record) => {
+      //   console.log(value, record)
+      // }}
+      // value={dataSource}
+      // onChange={(values)=> {
+      //   setDataSource(values)
+      // }}
+      recordCreatorProps={
+        {
+          newRecordType: 'cache',
+          // parentKey: 'parent',
+          position: 'top',
+          record: () => ({ 
+            key: 'default',
+            icon: 'MenuOutlined',
+            label: 'NEW MENU',
+            parent: '',
+            new: true
+          }),
+        }
+      }
+      editable={{
+        type: 'single',
+        // editableKeys,
+        // onChange: setEditableRowKeys,
+        onSave: async (key, record) => {debugger
+          if (menuKeys.includes(key as string)) {
+            axios.put('/api/menu', {...record}).then(res => {
+              if (res.status === 200) {
+                message.success('保存成功')
+                actionRef.current.reload();
+              }
+            })
+          } else {
+            axios.post('/api/menu', {...record, id: null}).then(res => {
+              if (res.status === 201) {
+                message.success('保存成功')
+                actionRef.current.reload();
+              }
+            })
+          }
+        },
+        // onCancel: (key) => actionRef.current.reload(),
+        actionRender: (row, config, defaultDom) => {
+          if (row.parent) {
+            return [defaultDom.save, defaultDom.delete]
+          }
+          return [defaultDom.save, defaultDom.delete, defaultDom.cancel]
+        },
+      }}
+    />
+  </Modal> );
+}
+
+export default MenuManager;
