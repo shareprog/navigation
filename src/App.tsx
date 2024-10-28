@@ -6,21 +6,17 @@ import {
   ToolOutlined,
   InfoCircleOutlined,
   UserOutlined,
-  DownOutlined,
-  MenuOutlined,
-  CreditCardOutlined,
-  LogoutOutlined,
 } from '@ant-design/icons';
 import { Avatar, Button, Dropdown, FloatButton, Image, Layout, Menu, MenuProps, message, Radio, Space, theme } from 'antd';
-import Cards from './pages/Cards';
+import Cards from './app/Cards';
 // import ReactWeather, { useOpenWeather } from 'react-open-weather';
 import Search from './components/Search';
 import Iconfont from './components/Iconfont';
 import axios from 'axios';
-import Login from './pages/Login';
-import Manager from './pages/Manager';
-import CardManager from './pages/CardManager';
-import MenuManager from './pages/MenuManager';
+import Login from './app/Login';
+import Manager from './app/Manager';
+import CardManager from './app/CardManager';
+import MenuManager from './app/MenuManager';
 
 const { Header, Sider, Content } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
