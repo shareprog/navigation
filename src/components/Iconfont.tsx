@@ -1,17 +1,19 @@
 //引入所有图标
+import Icon, { MenuOutlined } from '@ant-design/icons';
 import * as Icons from '@ant-design/icons';
-import React from 'react';
- 
-const Iconfont = (props: { icon: any; }) => {debugger
+
+type IconType = keyof typeof Icons;
+const Iconfont = (props: { icon?: any; }) => {
     //这里传入的props是一个对象，里面有icon属性，值是antd图标的名字
     const { icon } = props
     if (!icon) {
-        return <Icons.MenuOutlined />
+        return <MenuOutlined />
     }
     try {
-        return React.createElement(Icons[icon])
+        return <Icon component={Icons[icon as IconType] as React.ForwardRefExoticComponent<any>} {...props} />
+        // React.createElement(Icons[icon])
     } catch (error) { 
-        return <Icons.MenuOutlined />
+        return <MenuOutlined />
     }
 }
  

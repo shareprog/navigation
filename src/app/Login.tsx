@@ -1,7 +1,6 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, message, Modal } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
 
 // interface User {
 //   username: string;
@@ -9,6 +8,9 @@ import { useEffect, useState } from "react";
 // }
 function Login({
   open, setOpen
+}:{
+  open: boolean, 
+  setOpen: (open: boolean) => void
 }) {
   
   const [form] = Form.useForm();

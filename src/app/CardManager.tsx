@@ -20,6 +20,9 @@ type DataSourceType = {
 
 function CardManager({
   openCard, setOpenCard
+} : {
+  openCard: boolean,
+  setOpenCard: (open: boolean) => void
 }) {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<readonly DataSourceType[]>([]);
@@ -29,7 +32,7 @@ function CardManager({
   useEffect(() => {
     axios.get('/api/menu/listChild').then(res => {
       if (res.status === 200) {
-        setmenuSelect(res.data.map(item => ({label: item.label, value: item.key})))
+        setmenuSelect(res.data.map((item: {key: string, label: string}) => ({label: item.label, value: item.key})))
       }
     })
   }, [openCard])
@@ -38,7 +41,7 @@ function CardManager({
     {
       title: '名称',
       dataIndex: 'title',
-      formItemProps: (form, { rowIndex }) => {
+      formItemProps: (_, { rowIndex }) => {
         return {
           rules:
             rowIndex > 1 ? [{ required: true, message: '此项为必填项' }] : [],
@@ -98,7 +101,7 @@ function CardManager({
       title: '操作',
       valueType: 'option',
       width: 200,
-      render: (text, record, _, action) => [
+      render: (_, record, __, action) => [
         <a
           key="editable"
           onClick={() => {
@@ -180,14 +183,18 @@ function CardManager({
             axios.put('/api/card', {...record}).then(res => {
               if (res.status === 200) {
                 message.success('保存成功')
-                actionRef.current.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
               }
             })
           } else {
             axios.post('/api/card', {...record, id: null}).then(res => {
               if (res.status === 201) {
                 message.success('保存成功')
-                actionRef.current.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
               }
             })
           }

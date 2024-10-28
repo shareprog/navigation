@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { cyan, generate, green, presetPalettes, red } from '@ant-design/colors';
-import { Col, ColorPicker, Divider, Flex, Input, QRCode, Row, Segmented, Space, Splitter, theme } from 'antd';
+import { Col, ColorPicker, Divider, Flex, Input, QRCode, Row, Segmented, Space, Splitter } from 'antd';
 import type { ColorPickerProps, QRCodeProps } from 'antd';
 
 
@@ -11,8 +11,10 @@ const genPresets = (presets = presetPalettes) =>
     label,
     colors,
   }));
-const HorizontalLayout = ({setColor, color}) => {
-  debugger
+const HorizontalLayout = ({setColor, color} : {
+  setColor: (color: string) => void,
+  color: string
+}) => {
   const presets = genPresets({
     primary: generate(color),
     red,

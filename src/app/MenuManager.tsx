@@ -1,5 +1,5 @@
 
-import { Avatar, message, Modal } from "antd";
+import { message, Modal } from "antd";
 import {
   ActionType,
   EditableProTable,
@@ -10,12 +10,11 @@ import axios from "axios";
 import Iconfont from "../components/Iconfont";
 
 type DataSourceType = {
-  key: React.Key;
+  key: Key;
   label: string;
   icon: string;
   parent: string;
 };
-
 
 interface IMenuModel {
   key: string
@@ -48,6 +47,9 @@ const convertTree = (menus: IMenuModel[]) => {
 
 function MenuManager({
   openMenu, setOpenMenu
+}:{
+  openMenu: boolean,
+  setOpenMenu: (open: boolean) => void
 }) {
   // const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   // const [dataSource, setDataSource] = useState<readonly DataSourceType[]>([]);
@@ -58,8 +60,8 @@ function MenuManager({
   useEffect(() => {
     axios.get('/api/menu/list').then(res => {
       if (res.status === 200) {
-        setMenuKeys(res.data.map(item => item.key))
-        setMenuSelect(res.data.filter(item => item.icon).map(item => ({label: item.label, value: item.key})))
+        setMenuKeys(res.data.map((item: { key: any; }) => item.key))
+        setMenuSelect(res.data.filter((item: { icon: any; }) => item.icon).map((item: { label: any; key: any; }) => ({label: item.label, value: item.key})))
       }
     })
   }, [openMenu])
@@ -71,14 +73,14 @@ function MenuManager({
       // readonly: true,
       width: '20%',
       index: 1,
-      editable: (text, record, index) => {
+      editable: ({index}) => {
         return index == 0;
       },
     },
     {
       title: '名称',
       dataIndex: 'label',
-      formItemProps: (form, { rowIndex }) => {
+      formItemProps: (_, { rowIndex }) => {
         return {
           rules:
             rowIndex > 1 ? [{ required: true, message: '此项为必填项' }] : [],
@@ -92,7 +94,7 @@ function MenuManager({
       dataIndex: 'icon',
       width: '10%',
       index: 2,
-      editable: (text, record, index) => {
+      editable: ({record}) => {
         return !record.parent;
       },
       render: (text) => {
@@ -115,7 +117,7 @@ function MenuManager({
       valueType: 'option',
       width: 200,
       index: 5,
-      render: (text, record, _, action) => [
+      render: (_, record, __, action) => [
         <a
           key="editable"
           onClick={() => {
@@ -130,7 +132,9 @@ function MenuManager({
             axios.delete(`/api/menu/${record.key}`).then(res => {
               if (res.status === 200) {
                 message.success('删除成功')
-                actionRef.current.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
               }
             })
           }}
@@ -164,10 +168,7 @@ function MenuManager({
         x: 920,
         y: 400,
       }}
-      request={async (params: {
-        pageSize: number;
-        current: number;
-      },) => {
+      request={async () => {
         const data = await axios.get('/api/menu/list');
         // setmenuSelect(data.data.map(item => ({label: item.label, value: item.key})))
         return ({
@@ -175,7 +176,7 @@ function MenuManager({
           success: true,
         });
       }}
-      postData={(dataSource) => convertTree(dataSource)}
+      postData={(dataSource: IMenuModel[]) => convertTree(dataSource)}
       actionRef={actionRef}
       columns={columns}
       // onValuesChange={(value, record) => {
@@ -203,25 +204,29 @@ function MenuManager({
         type: 'single',
         // editableKeys,
         // onChange: setEditableRowKeys,
-        onSave: async (key, record) => {debugger
+        onSave: async (key, record) => {
           if (menuKeys.includes(key as string)) {
             axios.put('/api/menu', {...record}).then(res => {
               if (res.status === 200) {
                 message.success('保存成功')
-                actionRef.current.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
               }
             })
           } else {
             axios.post('/api/menu', {...record, id: null}).then(res => {
               if (res.status === 201) {
                 message.success('保存成功')
-                actionRef.current.reload();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
               }
             })
           }
         },
         // onCancel: (key) => actionRef.current.reload(),
-        actionRender: (row, config, defaultDom) => {
+        actionRender: (row, _, defaultDom) => {
           if (row.parent) {
             return [defaultDom.save, defaultDom.delete]
           }

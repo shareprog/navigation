@@ -1,6 +1,5 @@
 import { CreditCardOutlined, DownOutlined, LogoutOutlined, MenuOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
-import CardManager from "./CardManager";
 
 const items = [
   {
@@ -19,7 +18,11 @@ const items = [
     icon: <LogoutOutlined />
   }
 ]
-function Manager({username, setOpenMenu, setOpenCard}) {
+function Manager({username, setOpenMenu, setOpenCard}:{
+  username: string,
+  setOpenMenu: (open: boolean) => void,
+  setOpenCard: (open: boolean) => void
+}) {
   return (<Dropdown 
     menu={{
       items,

@@ -18,12 +18,18 @@ interface IMenuModel {
   parent: string 
 }
 
+function groupBy<T, K extends keyof any>(array: T[], keySelector: (item: T) => K): Map<K, T[]> {
+  return array.reduce((acc, item) => {
+    const key = keySelector(item);
+    const group = acc.get(key) || [];
+    group.push(item);
+    acc.set(key, group);
+    return acc;
+  }, new Map<K, T[]>());
+}
+
 const Cards = ({ menus }: { menus: IMenuModel[] }) => {
-
-  const getImageUrl = (imgUrl: string | URL) => {
-    return new URL(`/assets/images/logos/${imgUrl}`, import.meta.url).href
-  }
-
+  
   const [cards, setCards] = useState<any[]>([])
   
   useEffect(() => {
@@ -33,7 +39,7 @@ const Cards = ({ menus }: { menus: IMenuModel[] }) => {
     axios.get('/api/card/list').then(res => {
       if (res.status === 200) {
         const cards = res.data;
-        const map = Map.groupBy(cards, (card: ICardModel) => card.group);
+        const map = groupBy(cards, (card: ICardModel) => card.group);
         const data = menus.filter(menu => [...map.keys()].includes(menu.key)).map(
           menu => ({
             key: menu.key,
@@ -73,7 +79,7 @@ const Cards = ({ menus }: { menus: IMenuModel[] }) => {
                     }}
                   >
                     <Card.Meta
-                      avatar={<Avatar size="large" src={`/assets/images/logos/${child.imgUrl}`} />}
+                      avatar={<Avatar size="large" src={child.imgUrl?`/assets/images/logos/${child.imgUrl}`:child.url + 'favicon.ico'} />}
                       title={child.title}
                       description={child.description}
                     />

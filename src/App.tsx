@@ -2,12 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  SignatureOutlined,
-  ToolOutlined,
-  InfoCircleOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Dropdown, FloatButton, Image, Layout, Menu, MenuProps, message, Radio, Space, theme } from 'antd';
+import { Avatar, Button, FloatButton, Image, Layout, Menu, message, Space, theme } from 'antd';
 import Cards from './app/Cards';
 // import ReactWeather, { useOpenWeather } from 'react-open-weather';
 import Search from './components/Search';
@@ -19,7 +16,6 @@ import CardManager from './app/CardManager';
 import MenuManager from './app/MenuManager';
 
 const { Header, Sider, Content } = Layout;
-type MenuItem = Required<MenuProps>['items'][number];
 
 const siderStyle: React.CSSProperties = {
   overflow: 'auto',
@@ -31,47 +27,6 @@ const siderStyle: React.CSSProperties = {
   scrollbarWidth: 'thin',
   scrollbarGutter: 'stable',
 };
-
-const menu1: MenuItem[] = [
-  {
-    key: 'recommend',
-    icon: <Iconfont icon={'StarOutlined'} />,
-    label: '常用推荐'
-  },
-  {
-    key: 'information',
-    icon: <InfoCircleOutlined />,
-    label: '社区资讯'
-  },
-  {
-    key: 'tutorial',
-    icon: <SignatureOutlined />,
-    label: '学习教程',
-    children: [
-      {
-        key: 'java',
-        label: 'JAVA'
-      },
-      {
-        key: 'javascript',
-        label: 'JavaScript'
-      },
-      {
-        key: 'synthetical',
-        label: '综合'
-      },
-      {
-        key: 'video',
-        label: '视频教程'
-      }
-    ]
-  },
-  {
-      key: 'tool',
-      icon: <ToolOutlined />,
-      label: '常用工具'
-  }
-];
 
 interface IMenuModel {
   key: string
