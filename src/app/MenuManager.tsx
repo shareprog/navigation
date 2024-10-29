@@ -94,8 +94,8 @@ function MenuManager({
       dataIndex: 'icon',
       width: '10%',
       index: 2,
-      editable: ({record}) => {
-        return !record.parent;
+      editable: (_, record) => {
+        return !record?.parent;
       },
       render: (text) => {
         return text !== '-' ? <Iconfont icon={text} /> : ''
@@ -189,7 +189,7 @@ function MenuManager({
       recordCreatorProps={
         {
           newRecordType: 'cache',
-          // parentKey: 'parent',
+          // parentKey: 1,
           position: 'top',
           record: () => ({ 
             key: 'default',
@@ -225,6 +225,7 @@ function MenuManager({
             })
           }
         },
+        deletePopconfirmMessage: '是否删除',
         // onCancel: (key) => actionRef.current.reload(),
         actionRender: (row, _, defaultDom) => {
           if (row.parent) {

@@ -33,6 +33,7 @@ interface IMenuModel {
   icon: string
   label: string
   parent: string 
+  sorted: number
 }
 
 

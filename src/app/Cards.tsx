@@ -28,6 +28,17 @@ function groupBy<T, K extends keyof any>(array: T[], keySelector: (item: T) => K
   }, new Map<K, T[]>());
 }
 
+const showFavicon = (card: ICardModel) => {
+  if (card.imgUrl.startsWith("http")) {
+    return <img src = {card.imgUrl} />
+  } else if (card.imgUrl) {
+    return <img src = {`/assets/images/logos/${card.imgUrl}`} />
+  } else {
+    const url = new URL(card.url);
+    return <img src = {`${url.hostname}/favicon.ico'`} />
+  }
+}
+
 const Cards = ({ menus }: { menus: IMenuModel[] }) => {
   
   const [cards, setCards] = useState<any[]>([])
@@ -79,7 +90,7 @@ const Cards = ({ menus }: { menus: IMenuModel[] }) => {
                     }}
                   >
                     <Card.Meta
-                      avatar={<Avatar size="large" src={child.imgUrl?`/assets/images/logos/${child.imgUrl}`:child.url + 'favicon.ico'} />}
+                      avatar={<Avatar size="large" src={showFavicon(child)} />}
                       title={child.title}
                       description={child.description}
                     />

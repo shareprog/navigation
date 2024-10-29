@@ -17,6 +17,16 @@ type DataSourceType = {
   enabled: boolean;
 };
 
+const showFavicon = (card: DataSourceType) => {
+  if (card.imgUrl.startsWith("http")) {
+    return <img src = {card.imgUrl} />
+  } else if (card.imgUrl) {
+    return <img src = {`/assets/images/logos/${card.imgUrl}`} />
+  } else {
+    const url = new URL(card.url);
+    return <img src = {`${url.hostname}/favicon.ico'`} />
+  }
+}
 
 function CardManager({
   openCard, setOpenCard
@@ -53,9 +63,9 @@ function CardManager({
       title: '图片',
       dataIndex: 'imgUrl',
       width: '10%',
-      render: (text) => (
+      render: (_, record) => (
         <Avatar
-          src={`/assets/images/logos/${text}`}
+          src={showFavicon(record)}
         />
       )
     },
