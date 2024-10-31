@@ -4,7 +4,7 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, FloatButton, Image, Layout, Menu, message, Space, theme } from 'antd';
+import { Affix, Avatar, Button, FloatButton, Image, Layout, Menu, message, Space, theme } from 'antd';
 import Cards from './app/Cards';
 // import ReactWeather, { useOpenWeather } from 'react-open-weather';
 import Search from './components/Search';
@@ -117,6 +117,8 @@ const App: React.FC = () => {
         />
       </Sider>
       <Layout style={{ marginInlineStart: collapsed ? 70 : 195 }}>
+        <Affix offsetTop={0} style={{
+            margin: '8px 8px 0px 8px',}}>
         <Header style={{ padding: 0, background: colorBgContainer }}>
           <Button
             type="text"
@@ -146,6 +148,7 @@ const App: React.FC = () => {
             }
           </Space>
         </Header>
+        </Affix>
         <Content
           style={{
             margin: '12px 8px',

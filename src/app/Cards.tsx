@@ -35,7 +35,7 @@ const showFavicon = (card: ICardModel) => {
     return <img src = {`/assets/images/logos/${card.imgUrl}`} />
   } else {
     const url = new URL(card.url);
-    return <img src = {`${url.hostname}/favicon.ico'`} />
+    return <img src = {`${url.origin}/favicon.ico'`} />
   }
 }
 

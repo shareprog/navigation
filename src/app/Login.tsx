@@ -21,6 +21,7 @@ function Login({
       if (res.status === 200) {
         sessionStorage.setItem('token', res.data.token)
         setOpen(false)
+        window.location.reload();
       }
     }).catch((e) => {
       console.log(e)
