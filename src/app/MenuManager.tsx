@@ -60,8 +60,10 @@ function MenuManager({
   useEffect(() => {
     axios.get('/api/menu/list').then(res => {
       if (res.status === 200) {
-        setMenuKeys(res.data.map((item: { key: any; }) => item.key))
-        setMenuSelect(res.data.filter((item: { icon: any; }) => item.icon).map((item: { label: any; key: any; }) => ({label: item.label, value: item.key})))
+        const keys = res.data.map((item: { key: any; }) => item.key);
+        setMenuKeys(keys)
+        setMenuSelect(res.data.filter(({ key }: { key: any; }) => keys.includes(key))
+        .map((item: { label: any; key: any; }) => ({label: item.label, value: item.key})))
       }
     })
   }, [openMenu])
@@ -73,7 +75,7 @@ function MenuManager({
       // readonly: true,
       width: '20%',
       index: 1,
-      editable: ({index}) => {
+      editable: (_, __, index) => {
         return index == 0;
       },
     },
@@ -94,9 +96,9 @@ function MenuManager({
       dataIndex: 'icon',
       width: '10%',
       index: 2,
-      editable: (_, record) => {
-        return !record?.parent;
-      },
+      // editable: (_, record) => {
+      //   return !record?.parent;
+      // },
       render: (text) => {
         return text !== '-' ? <Iconfont icon={text} /> : ''
       },

@@ -24,7 +24,7 @@ const showFavicon = (card: DataSourceType) => {
     return <img src = {`/assets/images/logos/${card.imgUrl}`} />
   } else {
     const url = new URL(card.url);
-    return <img src = {`${url.hostname}/favicon.ico'`} />
+    return <img src = {`${url.origin}/favicon.ico`} />
   }
 }
 
@@ -50,6 +50,7 @@ function CardManager({
   const columns: ProColumns<DataSourceType>[] = [
     {
       title: '名称',
+      key: 'title',
       dataIndex: 'title',
       formItemProps: (_, { rowIndex }) => {
         return {
@@ -62,27 +63,31 @@ function CardManager({
     {
       title: '图片',
       dataIndex: 'imgUrl',
+      key: 'imgUrl',
       width: '10%',
       render: (_, record) => (
         <Avatar
+          shape="square"
           src={showFavicon(record)}
         />
       )
     },
     {
+      key: 'url',
       title: '链接',
       dataIndex: 'url',
       width: '15%',
       render: (text) => <a href={text as string} target="_blank">{text}</a>,
     },
     {
+      key: 'description',
       title: '描述',
       dataIndex: 'description',
       width: '30%',
     },
     {
-      title: '所属分组',
       key: 'group',
+      title: '所属分组',
       dataIndex: 'group',
       valueType: 'select',
       fieldProps: {
@@ -90,6 +95,7 @@ function CardManager({
       },
     },
     {
+      key: 'enabled',
       title: '启用',
       dataIndex: 'enabled',
       width: '10%',

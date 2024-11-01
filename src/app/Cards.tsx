@@ -35,7 +35,7 @@ const showFavicon = (card: ICardModel) => {
     return <img src = {`/assets/images/logos/${card.imgUrl}`} />
   } else {
     const url = new URL(card.url);
-    return <img src = {`${url.origin}/favicon.ico'`} />
+    return <img src = {`${url.origin}/favicon.ico`} />
   }
 }
 
@@ -69,9 +69,10 @@ const Cards = ({ menus }: { menus: IMenuModel[] }) => {
   if (cards.length == 0) {
     return <Empty description={false} />
   }
-
+  
   return cards.map(card => 
             <Card 
+              key={card.key}
               size="small"
               title={<span id={card.key} style={{
                 fontSize: 18,
@@ -81,8 +82,9 @@ const Cards = ({ menus }: { menus: IMenuModel[] }) => {
               bordered={false}
               children={<Flex wrap gap="small">
                 {
-                  card.children?.map((child: any) => 
+                  card.children?.map((child: any, index: number) => 
                   <Card.Grid
+                    key={index}
                     style={{ width: 260, border: 0, cursor: 'pointer' }}
                     hoverable
                     onClick={() => {
@@ -90,7 +92,7 @@ const Cards = ({ menus }: { menus: IMenuModel[] }) => {
                     }}
                   >
                     <Card.Meta
-                      avatar={<Avatar size="large" src={showFavicon(child)} />}
+                      avatar={<Avatar shape="square" size="large" src={showFavicon(child)} />}
                       title={child.title}
                       description={child.description}
                     />
