@@ -9,6 +9,7 @@ import {
   } from "react-router-dom";
 import QR from './pages/QR.tsx';
 import URLEncode from './pages/Encoded/URLEncode.tsx';
+import Ocr from './pages/Ocr.tsx';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.withCredentials = true
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
     {
       path: "/qr",
       element: <QR />,
+    },
+    {
+      path: "/ocr",
+      element: <Ocr />,
     },
     {
       path: "/url_encode",
