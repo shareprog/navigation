@@ -32,11 +32,7 @@ const convertTree = (menus: IMenuModel[]) => {
       const parent = map.get(value.parent);
       if (parent) {
         parent.children = parent.children || [];
-        parent.children.push({
-          key: value.key,
-          label: value.label,
-          parent: value.parent,
-        })
+        parent.children.push(value)
       }
     } else {
       menuData.push(value)
@@ -62,8 +58,7 @@ function MenuManager({
       if (res.status === 200) {
         const keys = res.data.map((item: { key: any; }) => item.key);
         setMenuKeys(keys)
-        setMenuSelect(res.data.filter(({ key }: { key: any; }) => keys.includes(key))
-        .map((item: { label: any; key: any; }) => ({label: item.label, value: item.key})))
+        setMenuSelect(res.data.filter(({ parent }: { parent: any; }) => keys.includes(parent)))
       }
     })
   }, [openMenu])
@@ -96,9 +91,6 @@ function MenuManager({
       dataIndex: 'icon',
       width: '10%',
       index: 2,
-      // editable: (_, record) => {
-      //   return !record?.parent;
-      // },
       render: (text) => {
         return text !== '-' ? <Iconfont icon={text} /> : ''
       },
@@ -115,10 +107,18 @@ function MenuManager({
       index: 4,
     },
     {
+      title: '排序号',
+      key: 'sorted',
+      dataIndex: 'sorted',
+      width: '20%',
+      valueType: 'digit',
+      index: 5,
+    },
+    {
       title: '操作',
       valueType: 'option',
       width: 200,
-      index: 5,
+      index: 6,
       render: (_, record, __, action) => [
         <a
           key="editable"

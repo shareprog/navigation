@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { cyan, generate, green, presetPalettes, red } from '@ant-design/colors';
-import { Button, Col, ColorPicker, Descriptions, Divider, Flex, Input, QRCode, Row, Segmented, Space, Splitter } from 'antd';
+import { Button, Col, ColorPicker, Descriptions, Divider, Flex, Input, QRCode, Row, Segmented, Splitter } from 'antd';
 import type { ColorPickerProps, QRCodeProps } from 'antd';
 
 

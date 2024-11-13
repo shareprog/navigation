@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -48,7 +48,7 @@ const App: React.FC = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  useEffect(() => {
+  useMemo(() => {
     axios.get('/api/menu/list').then(res => {
       if (res.status === 200) {
         setMenus(res.data);
@@ -67,10 +67,10 @@ const App: React.FC = () => {
     }
   }, [])
 
-  const convertTree = (menus: IMenuModel[]) => {
+  const convertTree = (datas: IMenuModel[]) => {
     const menuData: (IMenuModel & {children?: IMenuModel[]})[] = [];
     const map = new Map();
-    menus.forEach((item: IMenuModel) => map.set(item.key, item));
+    datas.forEach((item: IMenuModel) => map.set(item.key, JSON.parse(JSON.stringify(item))));
     for(let value of map.values()) {
       if (value.parent) {
         const parent = map.get(value.parent);
@@ -79,6 +79,7 @@ const App: React.FC = () => {
           parent.children.push({
             key: value.key,
             label: value.label,
+            icon: <Iconfont icon={value.icon} />
           })
         }
       } else {
