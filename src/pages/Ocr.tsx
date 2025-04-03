@@ -2,20 +2,20 @@ import { InboxOutlined } from "@ant-design/icons";
 import { GetProp, Image, Spin, Splitter, Upload, UploadProps } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useState } from "react";
-import Tesseract, {createWorker} from 'tesseract.js';
+import Tesseract from 'tesseract.js';
 import ImgCrop from 'antd-img-crop';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 
-const workerTesseract = async (base64: any) => {
-  const worker = await createWorker();
-  await worker.load('eng+chi_sim');// eng(英文) / chi_sim(简体中文) / chi_tra(繁体中文) / eng+chi_sim(英文+简体中文) / (如果有多种语言用+连接即可)
-  await worker.reinitialize('eng+chi_sim'); //使用一种语言会快一些,多种语言混合会慢一些
-  const res = await worker.recognize(base64);
-  console.log('识别结果:', res); //text是最后识别到的内容
-  await worker.terminate(); //终止worker线程,节省内存资源
-}
+// const workerTesseract = async (base64: any) => {
+//   const worker = await createWorker();
+//   await worker.load('eng+chi_sim');// eng(英文) / chi_sim(简体中文) / chi_tra(繁体中文) / eng+chi_sim(英文+简体中文) / (如果有多种语言用+连接即可)
+//   await worker.reinitialize('eng+chi_sim'); //使用一种语言会快一些,多种语言混合会慢一些
+//   const res = await worker.recognize(base64);
+//   console.log('识别结果:', res); //text是最后识别到的内容
+//   await worker.terminate(); //终止worker线程,节省内存资源
+// }
 
 const { Dragger } = Upload;
 
